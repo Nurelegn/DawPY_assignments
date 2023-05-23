@@ -89,23 +89,11 @@ ORDER BY Cust_ID
 ---1. Create a “view” that keeps visit logs of customers on a monthly basis. (For
 ---each log, three field is kept: Cust_id, Year, Month)
 
-With Visit_log AS
-(SELECT Cust_id,Year(Order_Date), Month(Order_Date),
-       datediff(month,YEAR ,  Order_Date) AS visit_month
+
+SELECT Cust_ID,DATEPART(month, Order_Date) AS login_Month 
 FROM e_commerce_data
-)
-with Time_lapse AS
-    SELECT Cust_id,
-           visit_month lead(visit_month, 1) over (partition BY cust_id ORDER BY cust_id, visit_month)
-    FROM visit_log
-	)
-	
-Time_diff_calculated AS
-    SELECT cust_id,
-           visit_month,
-           lead,
-           lead — visit_month AS time_diff
-    FROM time_lapse
+GROUP BY Cust_ID, 
+DATEPART(Month, Order_Date);
 
 
 ---2. Create a “view” that keeps the number of monthly visits by users. (Show
